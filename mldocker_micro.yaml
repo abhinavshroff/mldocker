@@ -1,0 +1,32 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: mldocker-k8s-deployment
+spec:
+  selector:
+    matchLabels:
+      app: mldocker
+  replicas: 1 # deployment runs 1 pods matching the template
+  template: # create pods using pod definition in this template
+    metadata:
+      labels:
+        app: mldocker
+    spec:
+      containers:
+      - name: mldocker
+        image: abhinavshroff/mldocker:latest
+        ports:
+        - containerPort: 80 #Endpoint is at port 80 in the container
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mldocker-k8s-service
+spec:
+  type: NodePort #Exposes the service as a node port
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: mldocker
